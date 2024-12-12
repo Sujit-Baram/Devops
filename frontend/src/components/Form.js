@@ -6,15 +6,15 @@ function Form() {
   const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault();  // Prevent default form submission
 
-    // Clear previous error
+    // Clear any previous error
     setError('');
 
     const studentData = { name, email };
 
     try {
-      const response = await fetch('http://localhost:4000/api/students/submit', {  // Correct backend URL
+      const response = await fetch('http://localhost:4000/api/students/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(studentData),
@@ -52,4 +52,3 @@ function Form() {
 }
 
 export default Form;
-
