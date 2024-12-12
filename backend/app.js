@@ -7,11 +7,11 @@ const studentRoutes = require('./routes/students');
 const app = express();
 
 // Middleware
-app.use(cors());
-app.use(bodyParser.json());
+app.use(cors());  // Allow CORS for all origins
+app.use(bodyParser.json());  // Parse JSON bodies
 
 // Routes
-app.use('/api/students', studentRoutes);
+app.use('/api/students', studentRoutes);  // Route for students
 
 // Connect to MongoDB
 mongoose
