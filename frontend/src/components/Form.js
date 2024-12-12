@@ -14,7 +14,7 @@ function Form() {
     const studentData = { name, email };
 
     try {
-      const response = await fetch('http://localhost:4000/api/students/submit', {
+      const response = await fetch('http://devops.sujitbaram.online/api/students/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(studentData),
