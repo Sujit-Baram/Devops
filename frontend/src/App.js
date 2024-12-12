@@ -5,7 +5,7 @@ import Form from './components/Form';  // Ensure Form.js is imported correctly
 function App() {
   return (
     <div className="App">
-      <h1>Welcome to DevOps Student Form</h1>
+      <h1>Welcome to Student Form</h1>
       <Form />  {/* Make sure the Form component is correctly rendered */}
     </div>
   );
