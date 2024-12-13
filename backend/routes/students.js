@@ -15,4 +15,14 @@ router.post('/submit', async (req, res) => {
   }
 });
 
+// GET route to fetch all students
+router.get('/', async (req, res) => {
+  try {
+    const students = await Student.find(); // Find all student documents in the database
+    res.status(200).json(students); // Send students as a response
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to retrieve students.' });
+  }
+});
+
 module.exports = router;

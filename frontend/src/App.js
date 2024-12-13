@@ -1,14 +1,16 @@
 import React from 'react';
-import './App.css';
-import Form from './components/Form';  // Ensure Form.js is imported correctly
+import Form from './components/Form';
+import StudentList from './components/StudentList';
 
 function App() {
   return (
     <div className="App">
-      <h1>Welcome to Student Form</h1>
-      <Form />  {/* Make sure the Form component is correctly rendered */}
+      <h1>Welcome to DevOps Training</h1>
+      <Form />
+      <StudentList />
     </div>
   );
 }
 
 export default App;
+
