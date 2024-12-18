@@ -1,0 +1,10 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /var/www/html/project1
+hooks:
+  AfterInstall:
+    - location: scripts/restart.sh
+      timeout: 300
+      runas: root
