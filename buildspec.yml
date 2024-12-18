@@ -5,6 +5,8 @@ phases:
     runtime-versions:
       nodejs: 18 # Specify your desired Node.js version
     commands:
+      - echo "Navigating to the frontend directory"
+      - cd frontend
       - echo "Installing dependencies"
       - npm install
   build:
@@ -14,11 +16,10 @@ phases:
   post_build:
     commands:
       - echo "Copying build files to target directory"
-      - cp -r ./build/* /var/www/html/frontend
+      - sudo cp -r ./build/* /var/www/html/frontend
       - echo "Restarting Nginx service"
-      - systemctl restart nginx
+      - sudo systemctl restart nginx
 
 artifacts:
   files:
     - '**/*'
-
