@@ -1,10 +1,24 @@
-version: 0.0
-os: linux
-files:
-  - source: /
-    destination: /var/www/html/project1
-hooks:
-  AfterInstall:
-    - location: scripts/restart.sh
-      timeout: 300
-      runas: root
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 18 # Specify your desired Node.js version
+    commands:
+      - echo "Installing dependencies"
+      - sudo npm install
+  build:
+    commands:
+      - echo "Building the project"
+      - sudo npm run build
+  post_build:
+    commands:
+      - echo "Copying build files to target directory"
+      - sudo cp -r ./build/* /var/www/html/frontend
+      - echo "Restarting Nginx service"
+      - sudo systemctl restart nginx
+
+artifacts:
+  files:
+    - '**/*'
+
