@@ -10,13 +10,13 @@ phases:
   build:
     commands:
       - echo "Building the project"
-      - sudo npm run build
+      - npm run build
   post_build:
     commands:
       - echo "Copying build files to target directory"
-      - sudo cp -r ./build/* /var/www/html/frontend
+      - cp -r ./build/* /var/www/html/frontend
       - echo "Restarting Nginx service"
-      - sudo systemctl restart nginx
+      - systemctl restart nginx
 
 artifacts:
   files:
