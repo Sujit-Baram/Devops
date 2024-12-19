@@ -10,7 +10,6 @@ phases:
     runtime-versions:
       python: 3.8
     commands:
-      # Install necessary tools and dependencies
       - echo "Installing dependencies"
       - pip install --upgrade awscli
       - echo "Retrieving PEM file from Secrets Manager"
@@ -24,29 +23,27 @@ phases:
 
   pre_build:
     commands:
-      echo "Starting pre-build phase"
+      - echo "Starting pre-build phase"
       # Additional pre-build commands if needed
 
   build:
     commands:
-      echo "Building your application"
+      - echo "Building your application"
       # Add your build commands here
 
   post_build:
     commands:
-      echo "Starting post-build phase"
-      echo "Copying build files to EC2 instance"
-      # Copy files to the EC2 instance using SCP
+      - echo "Starting post-build phase"
+      - echo "Copying build files to EC2 instance"
       - scp -i /tmp/key.pem -r ./frontend/build/* ubuntu@3.89.119.255:/var/www/html/frontend/build/
-      # Verify if the command was successful
       - echo "SCP command completed"
       - echo "Post-build phase complete"
 
-  artifacts:
-    files:
-      - '**/*'
-    discard-paths: yes
+artifacts:
+  files:
+    - '**/*'
+  discard-paths: yes
 
-  cache:
-    paths:
-      - '/tmp/*'
+cache:
+  paths:
+    - '/tmp/*'
