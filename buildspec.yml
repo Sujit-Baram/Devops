@@ -2,24 +2,26 @@ version: 0.2
 
 phases:
   install:
-    runtime-versions:
-      nodejs: 20 # Specify your desired Node.js version
     commands:
-      - echo "Navigating to the frontend directory"
-      - cd frontend
       - echo "Installing dependencies"
       - npm install
+
   build:
     commands:
-      - echo "Building the project"
+      - echo "Building the application"
       - npm run build
+
   post_build:
     commands:
-      - echo "Copying build files to target directory"
-      - cp -r ./build/* /var/www/html/frontend/build
-      - echo "Restarting Nginx service"
-      - sudo systemctl restart nginx
+      - echo "Retrieving the PEM key from Secrets Manager"
+      - aws secretsmanager get-secret-value --secret-id devopsfrom --query SecretString --output text > /tmp/key.pem
+      - chmod 600 /tmp/key.pem
+      - echo "Deploying the build to the EC2 instance"
+      - scp -i /tmp/key.pem -r ./build/* ubuntu@3.89.119.255:/var/www/html/frontend/build
+      - echo "Cleaning up temporary files"
+      - rm -f /tmp/key.pem
 
 artifacts:
   files:
     - '**/*'
+  base-directory: build
