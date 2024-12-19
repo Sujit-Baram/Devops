@@ -1,39 +1,52 @@
 version: 0.2
 
+env:
+  variables:
+    AWS_REGION: 'us-east-1'  # Set your region here
+    SECRET_NAME: 'your-secret-name'  # Replace with your Secret Name
+
 phases:
   install:
     runtime-versions:
-      nodejs: 20 # Specify your desired Node.js version
+      python: 3.8
     commands:
-      - echo "Navigating to the frontend directory"
-      - cd frontend
+      # Install necessary tools and dependencies
       - echo "Installing dependencies"
-      - npm install
+      - pip install --upgrade awscli
+      - echo "Retrieving PEM file from Secrets Manager"
+      - aws secretsmanager get-secret-value --secret-id $SECRET_NAME --query SecretString --output text > /tmp/key.pem
+      - echo "Checking if PEM file exists"
+      - if [ -f /tmp/key.pem ]; then echo "Key file exists"; else echo "Key file does not exist"; fi
+      - echo "Checking file permissions"
+      - ls -l /tmp/key.pem
+      - echo "Checking content of the PEM file"
+      - head -n 10 /tmp/key.pem  # Show the first 10 lines to confirm the content
+
+  pre_build:
+    commands:
+      echo "Starting pre-build phase"
+      # Additional pre-build commands if needed
 
   build:
     commands:
-      - echo "Building the project"
-      - npm run build
+      echo "Building your application"
+      # Add your build commands here
 
   post_build:
     commands:
-      - echo "Adding EC2 host to known_hosts"
-      - mkdir -p ~/.ssh
-      - ssh-keyscan -H 3.89.119.255 >> ~/.ssh/known_hosts
-
-      # Retrieving the PEM key from AWS Secrets Manager and storing it in /tmp/key.pem
-      - echo "Retrieving the PEM file from Secrets Manager"
-      - aws secretsmanager get-secret-value --secret-id devopsfrom --query SecretString --output text > /tmp/key.pem
-
-      # Ensure the file permissions are correct
-      - chmod 400 /tmp/key.pem
-
-      - echo "Copying build files to EC2 instance"
+      echo "Starting post-build phase"
+      echo "Copying build files to EC2 instance"
+      # Copy files to the EC2 instance using SCP
       - scp -i /tmp/key.pem -r ./frontend/build/* ubuntu@3.89.119.255:/var/www/html/frontend/build/
+      # Verify if the command was successful
+      - echo "SCP command completed"
+      - echo "Post-build phase complete"
 
-      - echo "Restarting Nginx service"
-      - ssh -i /tmp/key.pem ubuntu@3.89.119.255 'sudo systemctl restart nginx'
+  artifacts:
+    files:
+      - '**/*'
+    discard-paths: yes
 
-artifacts:
-  files:
-    - '**/*'
+  cache:
+    paths:
+      - '/tmp/*'
