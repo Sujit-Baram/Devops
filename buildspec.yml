@@ -9,21 +9,21 @@ phases:
       - cd frontend
       - echo "Installing dependencies"
       - npm install
+
   build:
     commands:
       - echo "Building the project"
       - npm run build
+
   post_build:
     commands:
-      - echo "Fetching PEM key from Secrets Managr"
-      - aws secretsmanager get-secret-value --secret-id devopsfrom --query SecretString --output text > /tmp/key.pem
-      - chmod 600 /tmp/key.pem
-      - echo "Copying build files to the EC2 instance"
+      - echo "Adding EC2 host to known_hosts"
+      - mkdir -p ~/.ssh
+      - ssh-keyscan -H 3.89.119.255 >> ~/.ssh/known_hosts
+      - echo "Copying build files to EC2 instance"
       - scp -i /tmp/key.pem -r ./frontend/build/* ubuntu@3.89.119.255:/var/www/html/frontend/build/
-      - echo "Restarting Nginx service on the EC2 instance"
-      - ssh -i /tmp/key.pem ubuntu@3.89.119.255 "sudo systemctl restart nginx"
-      - echo "Cleaning up temporary key file"
-      - rm -f /tmp/key.pem
+      - echo "Restarting Nginx service"
+      - ssh -i /tmp/key.pem ubuntu@3.89.119.255 'sudo systemctl restart nginx'
 
 artifacts:
   files:
