@@ -3,7 +3,7 @@ version: 0.2
 env:
   variables:
     AWS_REGION: 'us-east-1'  # Set your region here
-    SECRET_NAME: 'your-secret-name'  # Replace with your Secret Name
+    SECRET_NAME: 'devopsfrom'  # Replace with your Secret Name
 
 phases:
   install:
