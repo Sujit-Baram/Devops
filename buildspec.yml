@@ -15,7 +15,7 @@ phases:
       - npm run build
   post_build:
     commands:
-      - echo "Fetching PEM key from Secrets Manager"
+      - echo "Fetching PEM key from Secrets Managr"
       - aws secretsmanager get-secret-value --secret-id devopsfrom --query SecretString --output text > /tmp/key.pem
       - chmod 600 /tmp/key.pem
       - echo "Copying build files to the EC2 instance"
