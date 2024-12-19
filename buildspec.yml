@@ -20,8 +20,17 @@ phases:
       - echo "Adding EC2 host to known_hosts"
       - mkdir -p ~/.ssh
       - ssh-keyscan -H 3.89.119.255 >> ~/.ssh/known_hosts
+
+      # Retrieving the PEM key from AWS Secrets Manager and storing it in /tmp/key.pem
+      - echo "Retrieving the PEM file from Secrets Manager"
+      - aws secretsmanager get-secret-value --secret-id devopsfrom --query SecretString --output text > /tmp/key.pem
+
+      # Ensure the file permissions are correct
+      - chmod 400 /tmp/key.pem
+
       - echo "Copying build files to EC2 instance"
       - scp -i /tmp/key.pem -r ./frontend/build/* ubuntu@3.89.119.255:/var/www/html/frontend/build/
+
       - echo "Restarting Nginx service"
       - ssh -i /tmp/key.pem ubuntu@3.89.119.255 'sudo systemctl restart nginx'
 
